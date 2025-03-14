@@ -11,7 +11,7 @@ import {
   useRef,
   useState,
 } from "react";
-import JSONSchema, { type JSONType } from "./JSONSchema";
+import type { JSONType } from "./JSONSchema";
 import ObservableValue from "./ObservableValue";
 import useSessionStorage from "./SessionStorage";
 
@@ -28,7 +28,7 @@ type GetPart<Obj extends object, Path extends string> = Path extends `${infer He
 const JSONStorageContext = createContext<ObservableValue<JSONType | null> | undefined>(undefined);
 
 const prepareValue = (rawValue: string | null): JSONType | null => {
-  return rawValue === null ? null : JSONSchema.parse(JSON.parse(rawValue));
+  return rawValue === null ? null : JSON.parse(rawValue);
 };
 
 const exportValue = (rawValue: JSONType | null): string | null => {
