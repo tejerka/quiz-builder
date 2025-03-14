@@ -22,7 +22,9 @@ const Container = styled(({ className }: PropsWithClassName): ReactElement => {
     <div className={className}>
       <SidePanel />
       <p>{JSON.stringify(state)}</p>
+      <br />
       <p>{import.meta.env.VITE_APP_VERSION ?? "dev"}</p>
+      <br />
       <p>{import.meta.env.VITE_APP_BUILD_TIMESTAMP ?? "unknown"}</p>
     </div>
   );

@@ -2,7 +2,7 @@
 
 ## App url access
 
-[App access](https://html-preview.github.io/?url=https://github.com/tejerka/quiz-builder/releases/latest/download/index.html)
+[App access](https://tejerka.github.io/quiz-builder)
 
 ## publish new version
 
