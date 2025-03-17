@@ -15,7 +15,10 @@ import type { JSONType } from "./JSONSchema";
 import ObservableValue from "./ObservableValue";
 import useSessionStorage from "./SessionStorage";
 
-type GetPart<Obj extends object, Path extends string> = Path extends `${infer Head}.${infer Tail}`
+type GetPart<
+  Obj extends object | unknown[],
+  Path extends string,
+> = Path extends `${infer Head}.${infer Tail}`
   ? Head extends keyof Obj
     ? Obj[Head] extends object
       ? GetPart<Obj[Head], Tail>
@@ -25,21 +28,29 @@ type GetPart<Obj extends object, Path extends string> = Path extends `${infer He
     ? Obj[Path]
     : never;
 
-const JSONStorageContext = createContext<ObservableValue<JSONType | null> | undefined>(undefined);
+export type DeepPartial<T> = T extends object
+  ? {
+      [P in keyof T]?: DeepPartial<T[P]>;
+    }
+  : T;
 
-const prepareValue = (rawValue: string | null): JSONType | null => {
+const JSONStorageContext = createContext<ObservableValue<DeepPartial<JSONType> | null> | undefined>(
+  undefined,
+);
+
+const prepareValue = (rawValue: string | null): DeepPartial<JSONType> | null => {
   return rawValue === null ? null : JSON.parse(rawValue);
 };
 
-const exportValue = (rawValue: JSONType | null): string | null => {
+const exportValue = (rawValue: DeepPartial<JSONType> | null): string | null => {
   return rawValue === null ? null : JSON.stringify(rawValue);
 };
 
 export const JSONStorageProvider = ({ children }: PropsWithChildren) => {
   const { getObservableItem } = useSessionStorage();
   const sessionJSONObservable = getObservableItem("working-JSON");
-  const JSONObservable = useRef<ObservableValue<JSONType | null>>(
-    new ObservableValue<JSONType | null>(prepareValue(sessionJSONObservable.value)),
+  const JSONObservable = useRef<ObservableValue<DeepPartial<JSONType> | null>>(
+    new ObservableValue<DeepPartial<JSONType> | null>(prepareValue(sessionJSONObservable.value)),
   );
 
   useEffect(() => {
@@ -88,27 +99,29 @@ const useJSONStorage = () => {
 };
 
 const getJsonPart = <Key extends string>(
-  json: JSONType | null,
+  json: DeepPartial<JSONType> | null,
   key: Key,
-): GetPart<JSONType, Key> | null => {
+): GetPart<DeepPartial<JSONType>, Key> | null => {
   if (json === null) {
     return null;
   }
-  return (get(json, key) ?? null) as GetPart<JSONType, Key> | null;
+  return (get(json, key) ?? null) as GetPart<DeepPartial<JSONType>, Key> | null;
 };
 
 export const useJSONPartState = <Key extends string>(
   key: Key,
 ): [
-  GetPart<JSONType, Key> | null,
+  GetPart<DeepPartial<JSONType>, Key> | null,
   (
     newValue:
-      | (GetPart<JSONType, Key> | null)
-      | ((prev: GetPart<JSONType, Key> | null) => GetPart<JSONType, Key> | null),
+      | (GetPart<DeepPartial<JSONType>, Key> | null)
+      | ((
+          prev: GetPart<DeepPartial<JSONType>, Key> | null,
+        ) => GetPart<DeepPartial<JSONType>, Key> | null),
   ) => void,
 ] => {
   const JSONStorage = useJSONStorage();
-  const [subjectState, setSubjectState] = useState<GetPart<JSONType, Key> | null>(
+  const [subjectState, setSubjectState] = useState<GetPart<DeepPartial<JSONType>, Key> | null>(
     getJsonPart<Key>(JSONStorage.value, key),
   );
 
@@ -125,8 +138,10 @@ export const useJSONPartState = <Key extends string>(
   const setSubjectValue = useCallback(
     (
       valueFromParam:
-        | (GetPart<JSONType, Key> | null)
-        | ((prev: GetPart<JSONType, Key> | null) => GetPart<JSONType, Key> | null),
+        | (GetPart<DeepPartial<JSONType>, Key> | null)
+        | ((
+            prev: GetPart<DeepPartial<JSONType>, Key> | null,
+          ) => GetPart<DeepPartial<JSONType>, Key> | null),
     ) => {
       const partValue = getJsonPart<Key>(JSONStorage.value, key);
       const newValue =

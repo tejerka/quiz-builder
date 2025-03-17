@@ -1,3 +1,4 @@
+import { Toaster } from "@/components/ui/sonner";
 import type { ReactElement } from "react";
 import Container from "./Container";
 import { JSONStorageProvider } from "./JSONStorage";
@@ -8,6 +9,7 @@ const App = (): ReactElement => {
     <SessionStorageProvider>
       <JSONStorageProvider>
         <Container />
+        <Toaster />
       </JSONStorageProvider>
     </SessionStorageProvider>
   );
