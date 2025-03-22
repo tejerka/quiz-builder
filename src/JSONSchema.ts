@@ -6,23 +6,24 @@ const translateTextSchema = z.record(z.union([z.literal("fr"), z.literal("en")])
 
 const backgroundSchema = z.object({
   image: z.string().optional(),
-  couleur: z.string().optional(),
+  couleur: colorStringSchema.optional(),
 });
 
 const screenTemplateSchema = z.object({
   id: z.string(),
   fond: backgroundSchema.optional(),
   titreEcran: translateTextSchema,
+  subType: z.literal(undefined),
 });
 
-const launchScreenSchema = screenTemplateSchema.extend({
+export const launchScreenSchema = screenTemplateSchema.extend({
   type: z.literal("lancement"),
   titre: translateTextSchema.optional(),
   texte: translateTextSchema,
   bouton_suivant: translateTextSchema,
 });
 
-const transitionScreenSchema = screenTemplateSchema.extend({
+export const transitionScreenSchema = screenTemplateSchema.extend({
   type: z.literal("transition"),
   image: z.string().optional(),
   bouton_suivant: translateTextSchema,
@@ -35,16 +36,16 @@ const choiceElementSchema = z.object({
   reponse: z.boolean(),
 });
 
-const choicesScreenSchema = screenTemplateSchema.extend({
+export const choicesScreenSchema = screenTemplateSchema.extend({
   type: z.literal("qcm"),
   image: z.string().optional(),
   consigne: translateTextSchema,
   valider: translateTextSchema,
   feedBack: translateTextSchema,
-  choices: z.array(choiceElementSchema).max(5),
+  choix: z.array(choiceElementSchema).max(5),
 });
 
-const searchScreenSchema = screenTemplateSchema.extend({
+export const searchScreenSchema = screenTemplateSchema.extend({
   type: z.literal("image"),
   image: z.string(),
   timer: z.number(),
@@ -61,8 +62,9 @@ const dragTextElementSchema = z.object({
   drop: z.string(),
 });
 
-const dragAndDropTextScreenSchema = screenTemplateSchema.extend({
+export const dragAndDropTextScreenSchema = screenTemplateSchema.extend({
   type: z.literal("dragdrop"),
+  subType: z.literal("text").optional(),
   consigne: translateTextSchema,
   valider: translateTextSchema,
   feedBack: translateTextSchema,
@@ -77,8 +79,9 @@ const dragImageElementSchema = z.object({
   drop: z.string(),
 });
 
-const dragAndDropImageScreenSchema = screenTemplateSchema.extend({
+export const dragAndDropImageScreenSchema = screenTemplateSchema.extend({
   type: z.literal("dragdrop"),
+  subType: z.literal("image").optional(),
   consigne: translateTextSchema,
   valider: translateTextSchema,
   feedBack: translateTextSchema,
@@ -93,7 +96,7 @@ const sortElementSchema = z.object({
   place: z.number().min(1).max(5),
 });
 
-const SortScreenSchema = screenTemplateSchema.extend({
+export const SortScreenSchema = screenTemplateSchema.extend({
   type: z.literal("classement"),
   consigne: translateTextSchema,
   valider: translateTextSchema,
@@ -102,13 +105,13 @@ const SortScreenSchema = screenTemplateSchema.extend({
   classement: z.array(sortElementSchema).max(5),
 });
 
-const EndScreenSchema = screenTemplateSchema.extend({
+export const EndScreenSchema = screenTemplateSchema.extend({
   type: z.literal("fin"),
   image: z.string().optional(),
   bouton_suivant: translateTextSchema,
 });
 
-const screenSchema = z.union([
+export const screenSchema = z.union([
   launchScreenSchema,
   transitionScreenSchema,
   choicesScreenSchema,
@@ -134,7 +137,7 @@ export const quizSchema = z.object({
 });
 
 const JSONSchema = z.object({
-  fond_permanent: backgroundSchema.optional().optional(),
+  fond_permanent: backgroundSchema.optional(),
   fond_choix_quiz: z
     .object({
       image: z.string().optional(),
