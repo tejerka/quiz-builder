@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import AppBooleanInput from "@/forms/AppBooleanInput";
 import AppInput from "@/forms/AppInput";
+import DeleteButton from "@/forms/DeleteButton";
 import { type ReactElement, useCallback } from "react";
 
 const Choices = <Key extends string>({ JSONKey }: { JSONKey: Key }): ReactElement => {
@@ -15,6 +16,15 @@ const Choices = <Key extends string>({ JSONKey }: { JSONKey: Key }): ReactElemen
     });
   }, [setValue]);
 
+  const onDelete = useCallback(
+    (index: number) => {
+      setValue((prev) => {
+        return (prev ?? []).filter((_, i) => i !== index);
+      });
+    },
+    [setValue],
+  );
+
   return (
     <div className={"flex flex-col gap-2"}>
       {(value ?? []).map((element, index) => (
@@ -24,11 +34,21 @@ const Choices = <Key extends string>({ JSONKey }: { JSONKey: Key }): ReactElemen
             <AppInput label={"Image"} JSONKey={`${JSONKey}.${index}.image`} />
             <AppInput label={"Texte"} JSONKey={`${JSONKey}.${index}.texte.fr`} />
             <AppBooleanInput label={"Reponse"} JSONKey={`${JSONKey}.${index}.reponse`} />
+            <DeleteButton
+              onDelete={() => {
+                onDelete(index);
+              }}
+            />
           </CardContent>
         </Card>
       ))}
       {(value ?? []).length >= 5 ? null : (
-        <Button disabled={(value ?? []).length >= 5} onClick={onAdd} variant={"outline"}>
+        <Button
+          className="w-[350px]"
+          disabled={(value ?? []).length >= 5}
+          onClick={onAdd}
+          variant={"outline"}
+        >
           Ajouter element
         </Button>
       )}

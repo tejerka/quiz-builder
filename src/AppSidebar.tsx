@@ -2,6 +2,7 @@ import JSONSchema from "@/JSONSchema";
 import useJSONStorage from "@/JSONStorage";
 import { Button } from "@/components/ui/button";
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader } from "@/components/ui/sidebar";
+import DeleteButton from "@/forms/DeleteButton";
 import { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
 
@@ -43,14 +44,16 @@ const AppSidebar = () => {
     };
     input.click();
   }, [JSONStorage]);
+
   const onExportClick = useCallback(() => {
     const link = document.createElement("a");
-    link.href = `data:text/plain;charset=utf-8,${encodeURIComponent(JSON.stringify(JSONStorage.value))}`;
+    link.href = `data:text/plain;charset=utf-8,${encodeURIComponent(JSON.stringify(JSONStorage.value, null, 2))}`;
     link.download = "new.json";
     link.target = "_blank";
 
     link.click();
   }, [JSONStorage]);
+
   const onClearClick = useCallback(() => {
     JSONStorage.next(null);
   }, [JSONStorage]);
@@ -79,7 +82,11 @@ const AppSidebar = () => {
         <Button disabled={state !== "imported"} onClick={onExportClick}>
           export
         </Button>
-        <Button onClick={onClearClick}>clear</Button>
+        <DeleteButton
+          label={"Tout supprimer"}
+          confirmMessage={"Tout supprimer definitivement ?"}
+          onDelete={onClearClick}
+        />
       </SidebarContent>
       <SidebarFooter>
         <div className={"flex flex-col gap-1 justify-center"}>

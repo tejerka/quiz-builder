@@ -24,9 +24,18 @@ const Container = (): ReactElement => {
     },
     [setQuizArray],
   );
-  const quizIndex = useMemo(
-    () => (quizArray ?? [])?.findIndex((q) => q?.id === selectedQuizId) ?? null,
-    [quizArray, selectedQuizId],
+  const quizIndex = useMemo(() => {
+    const index = (quizArray ?? [])?.findIndex((q) => q?.id === selectedQuizId) ?? null;
+    return index === -1 ? null : index;
+  }, [quizArray, selectedQuizId]);
+
+  const onDeleteScreen = useCallback(
+    (id: string) => {
+      setQuizArray((prev) => {
+        return (prev ?? []).filter((quiz) => quiz?.id !== id);
+      });
+    },
+    [setQuizArray],
   );
 
   return (
@@ -57,6 +66,7 @@ const Container = (): ReactElement => {
                       selected={quiz?.id === selectedQuizId}
                       onSelect={onSelect}
                       JSONKey={`quiz.${index}`}
+                      onDeleteQuiz={onDeleteScreen}
                     />
                   </>
                 );

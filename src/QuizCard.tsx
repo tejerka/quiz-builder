@@ -5,6 +5,7 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/componen
 import { Label } from "@/components/ui/label";
 import AppInput from "@/forms/AppInput";
 import AppTextArea from "@/forms/AppTextArea";
+import DeleteButton from "@/forms/DeleteButton";
 import { type ReactElement, useCallback } from "react";
 import type z from "zod";
 
@@ -13,10 +14,12 @@ const QuizCard = <Key extends string>({
   selected,
   onSelect,
   JSONKey,
+  onDeleteQuiz,
 }: {
   quiz: DeepPartial<z.infer<typeof quizSchema>>;
   selected: boolean;
   onSelect?: (id: string) => void;
+  onDeleteQuiz: (id: string) => void;
   JSONKey: Key;
 }): ReactElement => {
   const onCLick = useCallback(() => {
@@ -43,11 +46,23 @@ const QuizCard = <Key extends string>({
           <AppTextArea label={"Texte"} JSONKey={`${JSONKey}.choix.texte.fr`} />
         </div>
       </CardContent>
-      <CardFooter className="flex justify-between">
-        <Button variant="outline" onClick={onCLick}>
-          Editer les écrans
-        </Button>
-        <span>nombres ecrans: {quiz.ecrans?.length ?? 0}</span>
+      <CardFooter className="flex flex-col gap-2">
+        <div className="w-full flex justify-between">
+          <Button variant="outline" onClick={onCLick}>
+            Editer les écrans
+          </Button>
+          <span>nombres ecrans: {quiz.ecrans?.length ?? 0}</span>
+        </div>
+        <DeleteButton
+          label={"Supprimer quiz"}
+          confirmMessage={`Supprimer definitivement le quiz ${quiz.id}`}
+          onDelete={() => {
+            if (quiz?.id == null) {
+              return;
+            }
+            onDeleteQuiz(quiz.id);
+          }}
+        />
       </CardFooter>
     </Card>
   );

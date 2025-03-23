@@ -1,8 +1,9 @@
-import { screenSchema } from "@/JSONSchema";
+import type { screenSchema } from "@/JSONSchema";
 import { useJSONPartState } from "@/JSONStorage";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import AppInput from "@/forms/AppInput";
+import DeleteButton from "@/forms/DeleteButton";
 import Screen from "@/screens/Screen";
 import { type ReactElement, useCallback } from "react";
 import type z from "zod";
@@ -19,8 +20,13 @@ const screenTypeMap = {
 } as const;
 
 const isScreen = (screen: unknown): screen is z.infer<typeof screenSchema> => {
-  const { success } = screenSchema.safeParse(screen);
-  return success;
+  return (
+    "object" === typeof screen &&
+    null !== screen &&
+    "type" in screen &&
+    "string" === typeof screen.type &&
+    Object.keys(screenTypeMap).includes(screen.type)
+  );
 };
 
 const Screens = <Key extends string>({ JSONKey }: { JSONKey: Key }): ReactElement => {
@@ -34,6 +40,15 @@ const Screens = <Key extends string>({ JSONKey }: { JSONKey: Key }): ReactElemen
           type: "new",
         };
         return (prev ?? []).length === 0 ? [newScreen] : prev?.toSpliced(index, 0, newScreen);
+      });
+    },
+    [setScreens],
+  );
+
+  const onDeleteScreen = useCallback(
+    (id: string) => {
+      setScreens((prev) => {
+        return (prev ?? []).filter((screen) => screen.id !== id);
       });
     },
     [setScreens],
@@ -75,6 +90,13 @@ const Screens = <Key extends string>({ JSONKey }: { JSONKey: Key }): ReactElemen
                     type={screen.type}
                     subType={screen.subType}
                     JSONKey={`${JSONKey}.ecrans.${index}`}
+                  />
+                  <DeleteButton
+                    label={"Supprimer écran"}
+                    confirmMessage={`Supprimer definitivement l'écran ${screen.id} ${screen.titreEcran?.fr ?? ""}`}
+                    onDelete={() => {
+                      onDeleteScreen(screen.id);
+                    }}
                   />
                 </div>
               </CardContent>

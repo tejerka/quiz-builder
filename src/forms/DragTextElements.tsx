@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import AppInput from "@/forms/AppInput";
 import AppTextArea from "@/forms/AppTextArea";
+import DeleteButton from "@/forms/DeleteButton";
 import { type ReactElement, useCallback } from "react";
 
 const DragTextElements = <Key extends string>({ JSONKey }: { JSONKey: Key }): ReactElement => {
@@ -11,9 +12,18 @@ const DragTextElements = <Key extends string>({ JSONKey }: { JSONKey: Key }): Re
   const onAdd = useCallback(() => {
     setValue((prev) => {
       const length = (prev ?? []).length;
-      return length >= 5 ? prev : [...(prev ?? []), { id: `drag_text_${length + 1}` }];
+      return length >= 5 ? prev : [...(prev ?? []), { id: length + 1 }];
     });
   }, [setValue]);
+
+  const onDelete = useCallback(
+    (index: number) => {
+      setValue((prev) => {
+        return (prev ?? []).filter((_, i) => i !== index);
+      });
+    },
+    [setValue],
+  );
 
   return (
     <div className={"flex flex-col gap-2"}>
@@ -23,6 +33,11 @@ const DragTextElements = <Key extends string>({ JSONKey }: { JSONKey: Key }): Re
             <AppInput label={"Id"} JSONKey={`${JSONKey}.${index}.id`} type={"number"} />
             <AppTextArea label={"Texte"} JSONKey={`${JSONKey}.${index}.texte.fr`} />
             <AppInput label={"Drop id"} JSONKey={`${JSONKey}.${index}.drop`} />
+            <DeleteButton
+              onDelete={() => {
+                onDelete(index);
+              }}
+            />
           </CardContent>
         </Card>
       ))}

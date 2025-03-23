@@ -11,13 +11,13 @@ const AppInput = <Key extends string>({
   const [value, setValue] = useJSONPartState<Key>(JSONKey);
   const onChange = useCallback<Required<ComponentProps<typeof Input>>["onChange"]>(
     (event) => {
-      const newValue = event.target.value as unknown as typeof value;
+      let newValue = event.target.value as unknown as typeof value;
 
       if (newValue === "") {
         newValue = null;
       }
 
-      if (type === "number") {
+      if (type === "number" && newValue !== null) {
         newValue = +newValue;
       }
 
@@ -29,7 +29,7 @@ const AppInput = <Key extends string>({
   return (
     <div className={"flex gap-2"}>
       <Label>{label}:</Label>
-      <Input type={type} value={value} onChange={onChange} className={"bg-white"} />
+      <Input type={type} value={value ?? ""} onChange={onChange} className={"bg-white"} />
     </div>
   );
 };

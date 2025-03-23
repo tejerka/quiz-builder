@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import AppInput from "@/forms/AppInput";
 import AppTextArea from "@/forms/AppTextArea";
+import DeleteButton from "@/forms/DeleteButton";
 import { type ReactElement, useCallback } from "react";
 
 const Sort = <Key extends string>({ JSONKey }: { JSONKey: Key }): ReactElement => {
@@ -15,6 +16,15 @@ const Sort = <Key extends string>({ JSONKey }: { JSONKey: Key }): ReactElement =
     });
   }, [setValue]);
 
+  const onDelete = useCallback(
+    (index: number) => {
+      setValue((prev) => {
+        return (prev ?? []).filter((_, i) => i !== index);
+      });
+    },
+    [setValue],
+  );
+
   return (
     <div className={"flex flex-col gap-2"}>
       {(value ?? []).map((element, index) => (
@@ -24,6 +34,11 @@ const Sort = <Key extends string>({ JSONKey }: { JSONKey: Key }): ReactElement =
             <AppInput label={"Image"} JSONKey={`${JSONKey}.${index}.image`} />
             <AppTextArea label={"Texte"} JSONKey={`${JSONKey}.${index}.texte.fr`} />
             <AppInput label={"Place"} JSONKey={`${JSONKey}.${index}.place`} type={"number"} />
+            <DeleteButton
+              onDelete={() => {
+                onDelete(index);
+              }}
+            />
           </CardContent>
         </Card>
       ))}

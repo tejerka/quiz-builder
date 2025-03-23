@@ -2,6 +2,7 @@ import { useJSONPartState } from "@/JSONStorage";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import AppInput from "@/forms/AppInput";
+import DeleteButton from "@/forms/DeleteButton";
 import { type ReactElement, useCallback } from "react";
 
 const DropElements = <Key extends string>({ JSONKey }: { JSONKey: Key }): ReactElement => {
@@ -14,6 +15,15 @@ const DropElements = <Key extends string>({ JSONKey }: { JSONKey: Key }): ReactE
     });
   }, [setValue]);
 
+  const onDelete = useCallback(
+    (index: number) => {
+      setValue((prev) => {
+        return (prev ?? []).filter((_, i) => i !== index);
+      });
+    },
+    [setValue],
+  );
+
   return (
     <div className={"flex flex-col gap-2"}>
       {(value ?? []).map((element, index) => (
@@ -21,6 +31,11 @@ const DropElements = <Key extends string>({ JSONKey }: { JSONKey: Key }): ReactE
           <CardContent className={"flex flex-col gap-2"}>
             <AppInput label={"Id"} JSONKey={`${JSONKey}.${index}.id`} />
             <AppInput label={"Image"} JSONKey={`${JSONKey}.${index}.image`} />
+            <DeleteButton
+              onDelete={() => {
+                onDelete(index);
+              }}
+            />
           </CardContent>
         </Card>
       ))}
