@@ -71,7 +71,9 @@ const Container = (): ReactElement => {
           </ScrollArea>
         </div>
         <div className={"flex-col w-full"}>
-          {selectedQuizId === null ? null : (
+          {quizIndex === null ? (
+            <h2>Sélectionnez un quiz</h2>
+          ) : (
             <ScrollArea className={"h-screen w-full"}>
               <Screens JSONKey={`quiz.${quizIndex}`} />
             </ScrollArea>
