@@ -18,7 +18,7 @@ const DragImageElements = <Key extends string>({ JSONKey }: { JSONKey: Key }): R
     <div className={"flex flex-col gap-2"}>
       {(value ?? []).map((element, index) => (
         <Card key={index}>
-          <CardContent>
+          <CardContent className={"flex flex-col gap-2"}>
             <AppInput label={"Id"} JSONKey={`${JSONKey}.${index}.id`} type={"number"} />
             <AppInput label={"Image"} JSONKey={`${JSONKey}.${index}.image`} />
             <AppInput label={"Image miniature"} JSONKey={`${JSONKey}.${index}.image_miniature`} />

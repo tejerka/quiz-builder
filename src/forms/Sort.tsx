@@ -19,7 +19,7 @@ const Sort = <Key extends string>({ JSONKey }: { JSONKey: Key }): ReactElement =
     <div className={"flex flex-col gap-2"}>
       {(value ?? []).map((element, index) => (
         <Card key={index} className="w-[350px]">
-          <CardContent>
+          <CardContent className={"flex flex-col gap-2"}>
             <AppInput label={"Id"} JSONKey={`${JSONKey}.${index}.id`} />
             <AppInput label={"Image"} JSONKey={`${JSONKey}.${index}.image`} />
             <AppTextArea label={"Texte"} JSONKey={`${JSONKey}.${index}.texte.fr`} />

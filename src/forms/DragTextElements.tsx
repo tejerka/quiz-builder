@@ -19,7 +19,7 @@ const DragTextElements = <Key extends string>({ JSONKey }: { JSONKey: Key }): Re
     <div className={"flex flex-col gap-2"}>
       {(value ?? []).map((element, index) => (
         <Card key={index}>
-          <CardContent>
+          <CardContent className={"flex flex-col gap-2"}>
             <AppInput label={"Id"} JSONKey={`${JSONKey}.${index}.id`} type={"number"} />
             <AppTextArea label={"Texte"} JSONKey={`${JSONKey}.${index}.texte.fr`} />
             <AppInput label={"Drop id"} JSONKey={`${JSONKey}.${index}.drop`} />
