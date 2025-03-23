@@ -2,6 +2,7 @@ import { useJSONPartState } from "@/JSONStorage";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import AppInput from "@/forms/AppInput";
+import AppTextArea from "@/forms/AppTextArea";
 import { type ReactElement, useCallback } from "react";
 
 const DragTextElements = <Key extends string>({ JSONKey }: { JSONKey: Key }): ReactElement => {
@@ -17,17 +18,17 @@ const DragTextElements = <Key extends string>({ JSONKey }: { JSONKey: Key }): Re
   return (
     <div className={"flex flex-col gap-2"}>
       {(value ?? []).map((element, index) => (
-        <Card key={index} className="w-[350px]">
+        <Card key={index}>
           <CardContent>
             <AppInput label={"Id"} JSONKey={`${JSONKey}.${index}.id`} type={"number"} />
-            <AppInput label={"Texte"} JSONKey={`${JSONKey}.${index}.texte.fr`} />
+            <AppTextArea label={"Texte"} JSONKey={`${JSONKey}.${index}.texte.fr`} />
             <AppInput label={"Drop id"} JSONKey={`${JSONKey}.${index}.drop`} />
           </CardContent>
         </Card>
       ))}
       {(value ?? []).length >= 5 ? null : (
-        <Button disabled={(value ?? []).length >= 5} onClick={onAdd}>
-          Add
+        <Button disabled={(value ?? []).length >= 5} onClick={onAdd} variant={"outline"}>
+          Ajouter drag element
         </Button>
       )}
     </div>

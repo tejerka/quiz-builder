@@ -1,74 +1,94 @@
-import type { screenSchema } from "@/JSONSchema";
-import useJSONStorage, { type DeepPartial } from "@/JSONStorage";
+import { screenSchema } from "@/JSONSchema";
+import { useJSONPartState } from "@/JSONStorage";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import AppInput from "@/forms/AppInput";
 import Screen from "@/screens/Screen";
-import isEqual from "lodash.isequal";
-import { type ReactElement, useEffect, useMemo, useState } from "react";
+import { type ReactElement, useCallback } from "react";
 import type z from "zod";
 
-const Screens = ({ quizId }: { quizId: string }): ReactElement => {
-  const JSONStorage = useJSONStorage();
-  const quizIndex = useMemo(
-    () => (JSONStorage.value?.quiz ?? null)?.findIndex((q) => q?.id === quizId) ?? null,
-    [JSONStorage, quizId],
-  );
-  const [screens, setScreens] = useState<DeepPartial<Array<z.infer<typeof screenSchema>>>>(
-    JSONStorage.value?.quiz?.[quizIndex ?? -1]?.ecrans ?? [],
-  );
+const screenTypeMap = {
+  lancement: "Lancement",
+  transition: "Transition",
+  qcm: "QCM",
+  image: "Image",
+  dragdrop: "Drag and Drop",
+  classement: "Classement",
+  fin: "Fin",
+  new: "Nouveau",
+} as const;
 
-  useEffect(() => {
-    const subscription = JSONStorage.subscribe((nextValue) => {
-      const nextState = JSONStorage.value?.quiz?.[quizIndex ?? -1]?.ecrans ?? [];
-      setScreens((prevState) => (!isEqual(prevState, nextState) ? nextState : prevState));
-    });
-    return () => {
-      subscription?.unsubscribe();
-    };
-  }, [quizIndex, JSONStorage]);
+const isScreen = (screen: unknown): screen is z.infer<typeof screenSchema> => {
+  const { success } = screenSchema.safeParse(screen);
+  return success;
+};
 
-  if (quizIndex === null) {
-    return <span>Error</span>;
-  }
+const Screens = <Key extends string>({ JSONKey }: { JSONKey: Key }): ReactElement => {
+  const [screens, setScreens] = useJSONPartState(`${JSONKey}.ecrans`);
+
+  const onAddScreen = useCallback(
+    (index: number) => {
+      setScreens((prev) => {
+        const newScreen = {
+          id: `Screen_${prev?.length ?? 0}`,
+          type: "new",
+        };
+        return (prev ?? []).length === 0 ? [newScreen] : prev?.toSpliced(index, 0, newScreen);
+      });
+    },
+    [setScreens],
+  );
 
   return (
     <div className={"flex flex-col p-4 gap-4 justify-center items-center"}>
-      {screens.map((screen, index) => {
-        if (screen == null) {
+      {(screens ?? []).map((screen: unknown, index) => {
+        if (!isScreen(screen)) {
           return null;
         }
         return (
-          <Card key={screen.id} className="w-full">
-            <CardHeader>
-              <CardTitle>
+          <>
+            {index > 0 ? (
+              <Button
+                key={`add_screen_button_${screen.id}`}
+                variant={"outline"}
+                size={"sm"}
+                onClick={() => onAddScreen(index)}
+              >
+                Ajouter un ecran
+              </Button>
+            ) : null}
+            <Card key={`screen_${screen.id}`} className="w-full bg-[#f8f8f8]">
+              <CardHeader>
+                <CardTitle>
+                  <h3>Ecran type : {screenTypeMap[screen.type] ?? "Inconnu"}</h3>
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
                 <div className={"flex flex-col gap-2"}>
-                  <AppInput label={"id"} JSONKey={`quiz.${quizIndex}.ecrans.${index}.id`} />
+                  <AppInput label={"id"} JSONKey={`${JSONKey}.ecrans.${index}.id`} />
                   <AppInput
                     label={"Titre ecran"}
-                    JSONKey={`quiz.${quizIndex}.ecrans.${index}.titreEcran.fr`}
+                    JSONKey={`${JSONKey}.ecrans.${index}.titreEcran.fr`}
+                  />
+                  <Screen
+                    key={screen.id ?? index}
+                    type={screen.type}
+                    subType={screen.subType}
+                    JSONKey={`${JSONKey}.ecrans.${index}`}
                   />
                 </div>
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className={"flex flex-col gap-2"}>
-                <Screen
-                  key={screen.id ?? index}
-                  type={screen.type}
-                  subType={screen.subType}
-                  JSONKey={`quiz.${quizIndex}.ecrans.${index}`}
-                />
-              </div>
-            </CardContent>
-          </Card>
+              </CardContent>
+            </Card>
+          </>
         );
       })}
-      <div className={"w-[100px]"}>
-        <Button variant={"outline"} size={"sm"}>
-          Ajouter un ecran
-        </Button>
-      </div>
+      <Button
+        variant={"outline"}
+        size={"sm"}
+        onClick={() => onAddScreen((screens ?? []).findLastIndex(() => true) + 1)}
+      >
+        Ajouter un ecran
+      </Button>
     </div>
   );
 };

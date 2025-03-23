@@ -1,17 +1,33 @@
 import AppSidebar from "@/AppSidebar";
 import { useJSONPartState } from "@/JSONStorage";
 import QuizCard from "@/QuizCard";
+import { useSelectQuiz } from "@/SelectedQuizStorage";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import Screens from "@/screens/Screens";
-import { type ReactElement, useCallback, useState } from "react";
+import { type ReactElement, useCallback, useMemo } from "react";
 
 const Container = (): ReactElement => {
-  const [quizArray] = useJSONPartState("quiz");
-  const [selectedQuizId, setSelectedQuizId] = useState<string | null>(null);
+  const [quizArray, setQuizArray] = useJSONPartState("quiz");
+  const [selectedQuizId, setSelectedQuizId] = useSelectQuiz();
 
-  const onSelect = useCallback((id: string) => setSelectedQuizId(id), []);
+  const onSelect = useCallback((id: string) => setSelectedQuizId(id), [setSelectedQuizId]);
+  const onAddQuiz = useCallback(
+    (index: number) => {
+      setQuizArray((prev) => {
+        const newQuiz = {
+          id: `Quiz_${prev?.length ?? 0}`,
+        };
+        return (prev ?? []).length === 0 ? [newQuiz] : prev?.toSpliced(index, 0, newQuiz);
+      });
+    },
+    [setQuizArray],
+  );
+  const quizIndex = useMemo(
+    () => (quizArray ?? [])?.findIndex((q) => q?.id === selectedQuizId) ?? null,
+    [quizArray, selectedQuizId],
+  );
 
   return (
     <SidebarProvider open={true}>
@@ -27,7 +43,11 @@ const Container = (): ReactElement => {
                 return (
                   <>
                     {index > 0 ? (
-                      <Button key={`button_${quiz?.id ?? index}`} variant={"outline"}>
+                      <Button
+                        key={`button_${quiz?.id ?? index}`}
+                        variant={"outline"}
+                        onClick={() => onAddQuiz(index)}
+                      >
                         Ajouter un quiz
                       </Button>
                     ) : null}
@@ -36,18 +56,24 @@ const Container = (): ReactElement => {
                       quiz={quiz}
                       selected={quiz?.id === selectedQuizId}
                       onSelect={onSelect}
+                      JSONKey={`quiz.${index}`}
                     />
                   </>
                 );
               })}
-              <Button variant={"outline"}>Ajouter un quiz</Button>
+              <Button
+                variant={"outline"}
+                onClick={() => onAddQuiz((quizArray ?? []).findLastIndex(() => true) + 1)}
+              >
+                Ajouter un quiz
+              </Button>
             </div>
           </ScrollArea>
         </div>
         <div className={"flex-col w-full"}>
           {selectedQuizId === null ? null : (
             <ScrollArea className={"h-screen w-full"}>
-              <Screens quizId={selectedQuizId} />
+              <Screens JSONKey={`quiz.${quizIndex}`} />
             </ScrollArea>
           )}
         </div>

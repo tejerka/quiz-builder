@@ -17,7 +17,7 @@ const DropElements = <Key extends string>({ JSONKey }: { JSONKey: Key }): ReactE
   return (
     <div className={"flex flex-col gap-2"}>
       {(value ?? []).map((element, index) => (
-        <Card key={index} className="w-[350px]">
+        <Card key={index}>
           <CardContent>
             <AppInput label={"Id"} JSONKey={`${JSONKey}.${index}.id`} />
             <AppInput label={"Image"} JSONKey={`${JSONKey}.${index}.image`} />
@@ -25,8 +25,8 @@ const DropElements = <Key extends string>({ JSONKey }: { JSONKey: Key }): ReactE
         </Card>
       ))}
       {(value ?? []).length >= 5 ? null : (
-        <Button disabled={(value ?? []).length >= 5} onClick={onAdd}>
-          Add
+        <Button disabled={(value ?? []).length >= 5} onClick={onAdd} variant={"outline"}>
+          Ajouter drop element
         </Button>
       )}
     </div>

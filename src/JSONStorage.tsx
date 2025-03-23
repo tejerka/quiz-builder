@@ -127,8 +127,11 @@ export const useJSONPartState = <Key extends string>(
 
   useEffect(() => {
     const subscription = JSONStorage.subscribe((nextValue) => {
-      const partValue = getJsonPart<Key>(nextValue, key);
-      setSubjectState((prevState) => (!isEqual(prevState, partValue) ? partValue : prevState));
+      const partValue = JSON.parse(JSON.stringify(getJsonPart<Key>(nextValue, key)));
+
+      setSubjectState((prevState) => {
+        return !isEqual(prevState, partValue) ? partValue : prevState;
+      });
     });
     return () => {
       subscription?.unsubscribe();

@@ -19,7 +19,7 @@ const Choices = <Key extends string>({ JSONKey }: { JSONKey: Key }): ReactElemen
     <div className={"flex flex-col gap-2"}>
       {(value ?? []).map((element, index) => (
         <Card key={index} className="w-[350px]">
-          <CardContent>
+          <CardContent className={"flex flex-col gap-2"}>
             <AppInput label={"Id"} JSONKey={`${JSONKey}.${index}.id`} type={"number"} />
             <AppInput label={"Image"} JSONKey={`${JSONKey}.${index}.image`} />
             <AppInput label={"Texte"} JSONKey={`${JSONKey}.${index}.texte.fr`} />
@@ -28,8 +28,8 @@ const Choices = <Key extends string>({ JSONKey }: { JSONKey: Key }): ReactElemen
         </Card>
       ))}
       {(value ?? []).length >= 5 ? null : (
-        <Button disabled={(value ?? []).length >= 5} onClick={onAdd}>
-          Add
+        <Button disabled={(value ?? []).length >= 5} onClick={onAdd} variant={"outline"}>
+          Ajouter element
         </Button>
       )}
     </div>

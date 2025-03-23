@@ -2,6 +2,7 @@ import { useJSONPartState } from "@/JSONStorage";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import AppInput from "@/forms/AppInput";
+import AppTextArea from "@/forms/AppTextArea";
 import { type ReactElement, useCallback } from "react";
 
 const Sort = <Key extends string>({ JSONKey }: { JSONKey: Key }): ReactElement => {
@@ -21,14 +22,19 @@ const Sort = <Key extends string>({ JSONKey }: { JSONKey: Key }): ReactElement =
           <CardContent>
             <AppInput label={"Id"} JSONKey={`${JSONKey}.${index}.id`} />
             <AppInput label={"Image"} JSONKey={`${JSONKey}.${index}.image`} />
-            <AppInput label={"Texte"} JSONKey={`${JSONKey}.${index}.texte.fr`} />
+            <AppTextArea label={"Texte"} JSONKey={`${JSONKey}.${index}.texte.fr`} />
             <AppInput label={"Place"} JSONKey={`${JSONKey}.${index}.place`} type={"number"} />
           </CardContent>
         </Card>
       ))}
       {(value ?? []).length >= 5 ? null : (
-        <Button disabled={(value ?? []).length >= 5} onClick={onAdd}>
-          Add
+        <Button
+          className="w-[350px]"
+          disabled={(value ?? []).length >= 5}
+          onClick={onAdd}
+          variant={"outline"}
+        >
+          Ajouter element
         </Button>
       )}
     </div>

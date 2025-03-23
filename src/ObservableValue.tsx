@@ -9,24 +9,23 @@ class Subscription {
 
 class ObservableValue<Value> {
   value: Value;
-  #subscriptions = new Map<number, Subscriber<Value>>();
+  #subscriptions = new Array<Subscriber<Value>>();
   constructor(value: Value) {
     this.value = value;
   }
 
   subscribe(subscriber: Subscriber<Value>) {
-    const id = this.#subscriptions.size;
-    this.#subscriptions.set(id, subscriber);
+    this.#subscriptions.push(subscriber);
     subscriber(this.value);
     return new Subscription(() => {
-      this.#subscriptions.delete(id);
+      this.#subscriptions.filter((fn) => fn !== subscriber);
     });
   }
 
   next(value: Value) {
     this.value = value;
-    for (const [, subscriber] of this.#subscriptions) {
-      subscriber(this.value);
+    for (const subscriber of this.#subscriptions) {
+      subscriber(value);
     }
   }
 }

@@ -1,15 +1,14 @@
 import { useJSONPartState } from "@/JSONStorage";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 import { type ComponentProps, type ReactElement, useCallback } from "react";
 
-const AppInput = <Key extends string>({
+const AppTextArea = <Key extends string>({
   label,
   JSONKey,
-  type,
-}: { label: string; JSONKey: Key; type?: ComponentProps<typeof Input>["type"] }): ReactElement => {
+}: { label: string; JSONKey: Key }): ReactElement => {
   const [value, setValue] = useJSONPartState<Key>(JSONKey);
-  const onChange = useCallback<Required<ComponentProps<typeof Input>>["onChange"]>(
+  const onChange = useCallback<Required<ComponentProps<typeof Textarea>>["onChange"]>(
     (event) => {
       const newValue = event.target.value as unknown as typeof value;
 
@@ -17,21 +16,17 @@ const AppInput = <Key extends string>({
         newValue = null;
       }
 
-      if (type === "number") {
-        newValue = +newValue;
-      }
-
       setValue(newValue);
     },
-    [setValue, type],
+    [setValue],
   );
 
   return (
     <div className={"flex gap-2"}>
       <Label>{label}:</Label>
-      <Input type={type} value={value} onChange={onChange} className={"bg-white"} />
+      <Textarea value={value} onChange={onChange} className={"bg-white"} />
     </div>
   );
 };
 
-export default AppInput;
+export default AppTextArea;

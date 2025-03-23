@@ -12,7 +12,7 @@ const backgroundSchema = z.object({
 const screenTemplateSchema = z.object({
   id: z.string(),
   fond: backgroundSchema.optional(),
-  titreEcran: translateTextSchema,
+  titreEcran: translateTextSchema.optional(),
   subType: z.literal(undefined),
 });
 
@@ -111,7 +111,12 @@ export const EndScreenSchema = screenTemplateSchema.extend({
   bouton_suivant: translateTextSchema,
 });
 
+export const NewScreenSchema = screenTemplateSchema.extend({
+  type: z.literal("new"),
+});
+
 export const screenSchema = z.union([
+  NewScreenSchema,
   launchScreenSchema,
   transitionScreenSchema,
   choicesScreenSchema,

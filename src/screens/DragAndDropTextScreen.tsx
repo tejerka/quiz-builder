@@ -1,5 +1,6 @@
 import { Label } from "@/components/ui/label";
 import AppInput from "@/forms/AppInput";
+import AppTextArea from "@/forms/AppTextArea";
 import DragTextElements from "@/forms/DragTextElements";
 import DropElements from "@/forms/DropElements";
 import type { ReactElement } from "react";
@@ -7,16 +8,18 @@ import type { ReactElement } from "react";
 const DragAndDropTextScreen = <Key extends string>({ JSONKey }: { JSONKey: Key }): ReactElement => {
   return (
     <>
-      <AppInput label={"consigne"} JSONKey={`${JSONKey}.consigne.fr`} />
+      <AppTextArea label={"consigne"} JSONKey={`${JSONKey}.consigne.fr`} />
       <AppInput label={"valider"} JSONKey={`${JSONKey}.valider.fr`} />
-      <AppInput label={"feedBack"} JSONKey={`${JSONKey}.feedBack.fr`} />
-      <div className={"flex flex-col"}>
-        <Label>Drop</Label>
-        <DropElements JSONKey={`${JSONKey}.drop`} />
-      </div>
-      <div className={"flex flex-col"}>
-        <Label>Drag</Label>
-        <DragTextElements JSONKey={`${JSONKey}.drag`} />
+      <AppTextArea label={"feedBack"} JSONKey={`${JSONKey}.feedBack.fr`} />
+      <div className={"flex gap-4"}>
+        <div className={"flex flex-col flex-1/2 gap-2"}>
+          <Label>Drop Elements (max 5):</Label>
+          <DropElements JSONKey={`${JSONKey}.drop`} />
+        </div>
+        <div className={"flex flex-col flex-1/2 gap-2"}>
+          <Label>Drag Elements (max 5):</Label>
+          <DragTextElements JSONKey={`${JSONKey}.drag`} />
+        </div>
       </div>
     </>
   );
