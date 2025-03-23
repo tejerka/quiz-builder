@@ -11,7 +11,7 @@ const DragImageElements = <Key extends string>({ JSONKey }: { JSONKey: Key }): R
   const onAdd = useCallback(() => {
     setValue((prev) => {
       const length = (prev ?? []).length;
-      return length >= 10 ? prev : [...(prev ?? []), { id: `drag_image_${length + 1}` }];
+      return length >= 10 ? prev : [...(prev ?? []), { id: length + 1 }];
     });
   }, [setValue]);
 
