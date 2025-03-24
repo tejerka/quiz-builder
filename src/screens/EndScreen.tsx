@@ -6,6 +6,7 @@ const EndScreen = <Key extends string>({ JSONKey }: { JSONKey: Key }): ReactElem
     <>
       <AppInput label={"Image"} JSONKey={`${JSONKey}.image`} />
       <AppInput label={"Bouton suivant"} JSONKey={`${JSONKey}.bouton_suivant.fr`} />
+      <AppInput label={"Texte"} JSONKey={`${JSONKey}.texte.fr`} />
     </>
   );
 };

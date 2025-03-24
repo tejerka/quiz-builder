@@ -7,13 +7,19 @@ const AppInput = <Key extends string>({
   label,
   JSONKey,
   type,
-}: { label: string; JSONKey: Key; type?: ComponentProps<typeof Input>["type"] }): ReactElement => {
+  onChange: onChangeFromProps,
+}: {
+  label: string;
+  JSONKey: Key;
+  type?: ComponentProps<typeof Input>["type"];
+  onChange?: (id: string) => void;
+}): ReactElement => {
   const [value, setValue] = useJSONPartState<Key>(JSONKey);
   const onChange = useCallback<Required<ComponentProps<typeof Input>>["onChange"]>(
     (event) => {
       let newValue = event.target.value as unknown as typeof value;
 
-      if (newValue === "") {
+      if (newValue === "" || newValue == null) {
         newValue = null;
       }
 
@@ -21,9 +27,10 @@ const AppInput = <Key extends string>({
         newValue = +newValue;
       }
 
+      onChangeFromProps?.(newValue);
       setValue(newValue);
     },
-    [setValue, type],
+    [setValue, type, onChangeFromProps],
   );
 
   return (

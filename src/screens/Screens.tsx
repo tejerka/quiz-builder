@@ -75,7 +75,10 @@ const Screens = <Key extends string>({ JSONKey }: { JSONKey: Key }): ReactElemen
             <Card key={`screen_${screen.id}`} className="w-full bg-[#f8f8f8]">
               <CardHeader>
                 <CardTitle>
-                  <h3>Ecran type : {screenTypeMap[screen.type] ?? "Inconnu"}</h3>
+                  <h3>
+                    Ecran type : {screenTypeMap[screen.type] ?? "Inconnu"}{" "}
+                    {screen.subType == null ? "" : `(${screen.subType})`}
+                  </h3>
                 </CardTitle>
               </CardHeader>
               <CardContent>

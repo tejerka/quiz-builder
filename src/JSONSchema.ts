@@ -41,7 +41,7 @@ export const choicesScreenSchema = screenTemplateSchema.extend({
   image: z.string().optional(),
   consigne: translateTextSchema.optional(),
   valider: translateTextSchema.optional(),
-  feedBack: translateTextSchema.optional(),
+  feedback: translateTextSchema.optional(),
   choix: z.array(choiceElementSchema).max(5).optional(),
 });
 
@@ -67,7 +67,7 @@ export const dragAndDropTextScreenSchema = screenTemplateSchema.extend({
   subType: z.literal("text").optional(),
   consigne: translateTextSchema.optional(),
   valider: translateTextSchema.optional(),
-  feedBack: translateTextSchema.optional(),
+  feedback: translateTextSchema.optional(),
   drag: z.array(dragTextElementSchema).max(5).optional(),
   drop: z.array(dropElementSchema).max(5).optional(),
 });
@@ -84,31 +84,48 @@ export const dragAndDropImageScreenSchema = screenTemplateSchema.extend({
   subType: z.literal("image").optional(),
   consigne: translateTextSchema.optional(),
   valider: translateTextSchema.optional(),
-  feedBack: translateTextSchema.optional(),
+  feedback: translateTextSchema.optional(),
   drag: z.array(dragImageElementSchema).max(10).optional(),
   drop: z.array(dropElementSchema).max(5).optional(),
 });
 
-const sortElementSchema = z.object({
+const sortElementImageSchema = z.object({
   id: z.string(),
   image: z.string().optional(),
+  place: z.number().min(1).max(5).optional(),
+});
+
+export const SortImageScreenSchema = screenTemplateSchema.extend({
+  type: z.literal("classement"),
+  subType: z.literal("image").optional(),
+  consigne: translateTextSchema.optional(),
+  valider: translateTextSchema.optional(),
+  retour: translateTextSchema.optional(),
+  feedback: translateTextSchema.optional(),
+  classement: z.array(sortElementImageSchema).max(5).optional(),
+});
+
+const sortElementTextSchema = z.object({
+  id: z.string(),
   texte: translateTextSchema.optional(),
   place: z.number().min(1).max(5).optional(),
 });
 
-export const SortScreenSchema = screenTemplateSchema.extend({
+export const SortTextScreenSchema = screenTemplateSchema.extend({
   type: z.literal("classement"),
+  subType: z.literal("text").optional(),
   consigne: translateTextSchema.optional(),
   valider: translateTextSchema.optional(),
   retour: translateTextSchema.optional(),
-  feedBack: translateTextSchema.optional(),
-  classement: z.array(sortElementSchema).max(5).optional(),
+  feedback: translateTextSchema.optional(),
+  classement: z.array(sortElementTextSchema).max(5).optional(),
 });
 
 export const EndScreenSchema = screenTemplateSchema.extend({
   type: z.literal("fin"),
   image: z.string().optional(),
   bouton_suivant: translateTextSchema.optional(),
+  texte: translateTextSchema.optional(),
 });
 
 export const NewScreenSchema = screenTemplateSchema.extend({
@@ -123,7 +140,8 @@ export const screenSchema = z.union([
   searchScreenSchema,
   dragAndDropTextScreenSchema,
   dragAndDropImageScreenSchema,
-  SortScreenSchema,
+  SortImageScreenSchema,
+  SortTextScreenSchema,
   EndScreenSchema,
 ]);
 

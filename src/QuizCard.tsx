@@ -15,11 +15,13 @@ const QuizCard = <Key extends string>({
   onSelect,
   JSONKey,
   onDeleteQuiz,
+  setSelectedQuizId,
 }: {
   quiz: DeepPartial<z.infer<typeof quizSchema>>;
   selected: boolean;
   onSelect?: (id: string) => void;
   onDeleteQuiz: (id: string) => void;
+  setSelectedQuizId: (id: string) => void;
   JSONKey: Key;
 }): ReactElement => {
   const onCLick = useCallback(() => {
@@ -28,6 +30,15 @@ const QuizCard = <Key extends string>({
     }
     onSelect?.(quiz?.id);
   }, [onSelect, quiz.id]);
+  const onIdChange = useCallback(
+    (id: string) => {
+      if (!selected) {
+        return;
+      }
+      setSelectedQuizId(id);
+    },
+    [setSelectedQuizId],
+  );
 
   const background = selected ? "bg-blue-300" : "bg-accent";
 
@@ -35,7 +46,7 @@ const QuizCard = <Key extends string>({
     <Card className={`w-[350px] ${background}`}>
       <CardHeader>
         <CardTitle>
-          <AppInput label={"id"} JSONKey={`${JSONKey}.id`} />
+          <AppInput label={"id"} JSONKey={`${JSONKey}.id`} onChange={onIdChange} />
         </CardTitle>
       </CardHeader>
       <CardContent>

@@ -24,6 +24,7 @@ const Container = (): ReactElement => {
     },
     [setQuizArray],
   );
+
   const quizIndex = useMemo(() => {
     const index = (quizArray ?? [])?.findIndex((q) => q?.id === selectedQuizId) ?? null;
     return index === -1 ? null : index;
@@ -53,7 +54,7 @@ const Container = (): ReactElement => {
                   <>
                     {index > 0 ? (
                       <Button
-                        key={`button_${quiz?.id ?? index}`}
+                        key={`button_${index}`}
                         variant={"outline"}
                         onClick={() => onAddQuiz(index)}
                       >
@@ -61,12 +62,13 @@ const Container = (): ReactElement => {
                       </Button>
                     ) : null}
                     <QuizCard
-                      key={`quiz_${quiz?.id ?? index}`}
+                      key={`quiz_${index}`}
                       quiz={quiz}
                       selected={quiz?.id === selectedQuizId}
                       onSelect={onSelect}
                       JSONKey={`quiz.${index}`}
                       onDeleteQuiz={onDeleteScreen}
+                      setSelectedQuizId={setSelectedQuizId}
                     />
                   </>
                 );

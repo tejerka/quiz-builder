@@ -10,7 +10,7 @@ const AppTextArea = <Key extends string>({
   const [value, setValue] = useJSONPartState<Key>(JSONKey);
   const onChange = useCallback<Required<ComponentProps<typeof Textarea>>["onChange"]>(
     (event) => {
-      const newValue = event.target.value as unknown as typeof value;
+      let newValue = event.target.value as unknown as typeof value;
 
       if (newValue === "") {
         newValue = null;

@@ -10,7 +10,7 @@ const ChoicesScreen = <Key extends string>({ JSONKey }: { JSONKey: Key }): React
       <AppInput label={"image"} JSONKey={`${JSONKey}.image`} />
       <AppTextArea label={"consigne"} JSONKey={`${JSONKey}.consigne.fr`} />
       <AppInput label={"valider"} JSONKey={`${JSONKey}.valider.fr`} />
-      <AppTextArea label={"feedBack"} JSONKey={`${JSONKey}.feedBack.fr`} />
+      <AppTextArea label={"feedBack"} JSONKey={`${JSONKey}.feedback.fr`} />
       <div className={"flex flex-col flex-1/2 gap-2"}>
         <Label>Choix (max 5):</Label>
         <Choices JSONKey={`${JSONKey}.choix`} />

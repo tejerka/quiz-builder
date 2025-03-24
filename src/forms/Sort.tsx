@@ -6,7 +6,10 @@ import AppTextArea from "@/forms/AppTextArea";
 import DeleteButton from "@/forms/DeleteButton";
 import { type ReactElement, useCallback } from "react";
 
-const Sort = <Key extends string>({ JSONKey }: { JSONKey: Key }): ReactElement => {
+const Sort = <Key extends string>({
+  JSONKey,
+  ElementComponent,
+}: { JSONKey: Key; ElementComponent: (props: { JSONKey: Key }) => ReactElement }): ReactElement => {
   const [value, setValue] = useJSONPartState<Key>(JSONKey);
 
   const onAdd = useCallback(() => {
@@ -30,10 +33,7 @@ const Sort = <Key extends string>({ JSONKey }: { JSONKey: Key }): ReactElement =
       {(value ?? []).map((element, index) => (
         <Card key={index} className="w-[350px]">
           <CardContent className={"flex flex-col gap-2"}>
-            <AppInput label={"Id"} JSONKey={`${JSONKey}.${index}.id`} />
-            <AppInput label={"Image"} JSONKey={`${JSONKey}.${index}.image`} />
-            <AppTextArea label={"Texte"} JSONKey={`${JSONKey}.${index}.texte.fr`} />
-            <AppInput label={"Place"} JSONKey={`${JSONKey}.${index}.place`} type={"number"} />
+            <ElementComponent JSONKey={`${JSONKey}.${index}`} />
             <DeleteButton
               onDelete={() => {
                 onDelete(index);

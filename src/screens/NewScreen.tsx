@@ -77,10 +77,18 @@ const NewScreen = <Key extends string>({ JSONKey }: { JSONKey: Key }): ReactElem
       <Button
         variant={"outline"}
         onClick={() => {
-          onClickType("classement");
+          onClickType("classement", "image");
         }}
       >
-        Classement
+        Classement (Image)
+      </Button>
+      <Button
+        variant={"outline"}
+        onClick={() => {
+          onClickType("classement", "text");
+        }}
+      >
+        Classement (text)
       </Button>
       <Button
         variant={"outline"}

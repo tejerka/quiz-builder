@@ -10,7 +10,7 @@ const DragAndDropTextScreen = <Key extends string>({ JSONKey }: { JSONKey: Key }
     <>
       <AppTextArea label={"consigne"} JSONKey={`${JSONKey}.consigne.fr`} />
       <AppInput label={"valider"} JSONKey={`${JSONKey}.valider.fr`} />
-      <AppTextArea label={"feedBack"} JSONKey={`${JSONKey}.feedBack.fr`} />
+      <AppTextArea label={"feedBack"} JSONKey={`${JSONKey}.feedback.fr`} />
       <div className={"flex gap-4"}>
         <div className={"flex flex-col flex-1/2 gap-2"}>
           <Label>Drop Elements (max 5):</Label>

@@ -1,4 +1,4 @@
-import { dragAndDropTextScreenSchema, type screenSchema } from "@/JSONSchema";
+import { SortTextScreenSchema, dragAndDropTextScreenSchema, type screenSchema } from "@/JSONSchema";
 import type { DeepPartial } from "@/JSONStorage";
 import ChoicesScreen from "@/screens/ChoicesScreen";
 import DragAndDropImageScreen from "@/screens/DragAndDropImageScreen";
@@ -7,7 +7,8 @@ import EndScreen from "@/screens/EndScreen";
 import LaunchScreen from "@/screens/LaunchScreen";
 import NewScreen from "@/screens/NewScreen";
 import SearchScreen from "@/screens/SearchScreen";
-import SortScreen from "@/screens/SortScreen";
+import SortImageScreen from "@/screens/SortImageScreen";
+import SortTextScreen from "@/screens/SortTextScreen";
 import TransitionScreen from "@/screens/TransitionScreen";
 import UnknownScreen from "@/screens/UnknownScreen";
 import type { ReactElement } from "react";
@@ -29,8 +30,23 @@ const Screen = <Key extends string>({
       return <ChoicesScreen JSONKey={JSONKey} />;
     case "image":
       return <SearchScreen JSONKey={JSONKey} />;
-    case "classement":
-      return <SortScreen JSONKey={JSONKey} />;
+    case "classement": {
+      let effectiveSubType = subType;
+
+      if (effectiveSubType == null) {
+        const { success: isSortText } = SortTextScreenSchema.safeParse(screen);
+        effectiveSubType = isSortText ? "text" : "image";
+      }
+
+      switch (effectiveSubType) {
+        case "image":
+          return <SortImageScreen JSONKey={JSONKey} />;
+        case "text":
+          return <SortTextScreen JSONKey={JSONKey} />;
+        default:
+          return <UnknownScreen JSONKey={JSONKey} />;
+      }
+    }
     case "dragdrop": {
       let effectiveSubType = subType;
 
