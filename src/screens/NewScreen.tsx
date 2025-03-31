@@ -5,17 +5,29 @@ import { Label } from "@/components/ui/label";
 import { type ReactElement, useCallback } from "react";
 import type { z } from "zod";
 
+const feedbackBase = {
+  feedback: {
+    fr: "",
+  },
+};
+
 const NewScreen = <Key extends string>({ JSONKey }: { JSONKey: Key }): ReactElement => {
   const [, setValue] = useJSONPartState<Key>(JSONKey);
   const onClickType = useCallback(
     (
       type: z.infer<typeof screenSchema>["type"],
       subType?: z.infer<typeof screenSchema>["subType"],
+      additionalData?: object,
     ) => {
       setValue((prev) => {
-        const copy = JSON.parse(JSON.stringify(prev));
+        const copy = {
+          ...JSON.parse(JSON.stringify(prev)),
+          ...(additionalData == null ? {} : additionalData),
+        };
         copy.type = type;
-        copy.subType = subType;
+        if (subType != null) {
+          copy.subType = subType;
+        }
 
         return copy;
       });
@@ -45,7 +57,7 @@ const NewScreen = <Key extends string>({ JSONKey }: { JSONKey: Key }): ReactElem
       <Button
         variant={"outline"}
         onClick={() => {
-          onClickType("qcm");
+          onClickType("qcm", undefined, feedbackBase);
         }}
       >
         QCM
@@ -61,7 +73,7 @@ const NewScreen = <Key extends string>({ JSONKey }: { JSONKey: Key }): ReactElem
       <Button
         variant={"outline"}
         onClick={() => {
-          onClickType("dragdrop", "image");
+          onClickType("dragdrop", "image", feedbackBase);
         }}
       >
         Drag and Drop (Image)
@@ -69,7 +81,7 @@ const NewScreen = <Key extends string>({ JSONKey }: { JSONKey: Key }): ReactElem
       <Button
         variant={"outline"}
         onClick={() => {
-          onClickType("dragdrop", "text");
+          onClickType("dragdrop", "text", feedbackBase);
         }}
       >
         Drag and Drop (text)
@@ -77,7 +89,7 @@ const NewScreen = <Key extends string>({ JSONKey }: { JSONKey: Key }): ReactElem
       <Button
         variant={"outline"}
         onClick={() => {
-          onClickType("classement", "image");
+          onClickType("classement", "image", feedbackBase);
         }}
       >
         Classement (Image)
@@ -85,7 +97,7 @@ const NewScreen = <Key extends string>({ JSONKey }: { JSONKey: Key }): ReactElem
       <Button
         variant={"outline"}
         onClick={() => {
-          onClickType("classement", "text");
+          onClickType("classement", "text", feedbackBase);
         }}
       >
         Classement (text)
